@@ -18,7 +18,7 @@ class StackOverFlowSpider(CrawlSpider):
     name = "stackoverflow"
     allowed_domains = ["stackoverflow.com"]
     start_urls = [
-        "http://stackoverflow.com/search?q=regular+expression"
+        "http://stackoverflow.com/search?q=regular+expression+"
     ]
     rules = (
         # Extract links matching 'garage-sales-18/.*html' (but not matching 'subsection.php')
