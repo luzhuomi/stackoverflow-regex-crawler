@@ -14,8 +14,8 @@ import pymysql.cursors
 
 answers = open('answers.csv', 'a')
 
-class StackOverFlowSpider(CrawlSpider):
-    name = "stackoverflow"
+class AcceptedAnswerSpider(CrawlSpider):
+    name = "acceptedanswer"
     allowed_domains = ["stackoverflow.com"]
     start_urls = [
         "http://stackoverflow.com/search?q=regular+expression"
@@ -40,7 +40,7 @@ class StackOverFlowSpider(CrawlSpider):
         try:
             with connection.cursor() as cursor:
                 # Create a new record
-		sql = "INSERT INTO `answers` (`url`, `pre`, `time_posted`, `author`, `vote`) VALUES (%s, %s, %s, %s, %s)"
+		sql = "INSERT INTO `acceptedanswer` (`url`, `pre`, `time_posted`, `author`, `vote`) VALUES (%s, %s, %s, %s, %s)"
                 cursor.execute(sql, (item['url'], item['pre_text'], item['time_posted'], item['author'], item['vote']))
 
                 # connection is not autocommit by default. So you must commit to save
@@ -61,6 +61,7 @@ class StackOverFlowSpider(CrawlSpider):
         posts = hxs.select("//div[@id='answers']/div[@class='answer accepted-answer']")
         items = []
 
+
         for post in posts:
             # print(post)
             item = {}
@@ -69,6 +70,9 @@ class StackOverFlowSpider(CrawlSpider):
             item['time_posted'] = parse(post.select(".//div[@class='user-action-time']//span/text()").extract()[0])
 	    item['author']= ''.join(post.select(".//div[@class='user-details']//a/text()").extract())
 	    item['vote']=''.join(post.select(".//div[@class='vote']//span[@class='vote-count-post ' or @class='vote-count-post high-scored-post']/text()").extract())
+
+
+
             self.insert_item(item)
             items.append(item)
         # self.insert_posts(items)

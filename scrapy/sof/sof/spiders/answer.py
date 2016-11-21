@@ -14,8 +14,8 @@ import pymysql.cursors
 
 answers = open('answers.csv', 'a')
 
-class StackOverFlowSpider(CrawlSpider):
-    name = "stackoverflow"
+class AnswerSpider(CrawlSpider):
+    name = "answer"
     allowed_domains = ["stackoverflow.com"]
     start_urls = [
         "http://stackoverflow.com/search?q=regular+expression"
@@ -40,7 +40,7 @@ class StackOverFlowSpider(CrawlSpider):
         try:
             with connection.cursor() as cursor:
                 # Create a new record
-		sql = "INSERT INTO `answers` (`url`, `pre`, `time_posted`, `author`, `vote`) VALUES (%s, %s, %s, %s, %s)"
+		sql = "INSERT INTO `answer` (`url`, `pre`, `time_posted`, `author`, `vote`) VALUES (%s, %s, %s, %s, %s)"
                 cursor.execute(sql, (item['url'], item['pre_text'], item['time_posted'], item['author'], item['vote']))
 
                 # connection is not autocommit by default. So you must commit to save
@@ -58,9 +58,9 @@ class StackOverFlowSpider(CrawlSpider):
     def parse_item(self, response):
         global answers
         hxs = HtmlXPathSelector(response)
-        posts = hxs.select("//div[@id='answers']/div[@class='answer accepted-answer']")
+        posts = hxs.select("//div[@id='answers']/div[@class='answer']")
         items = []
-
+	# print(len(posts))
         for post in posts:
             # print(post)
             item = {}

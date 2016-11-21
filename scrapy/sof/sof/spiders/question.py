@@ -14,8 +14,8 @@ import pymysql.cursors
 
 answers = open('answers.csv', 'a')
 
-class StackOverFlowSpider(CrawlSpider):
-    name = "stackoverflow"
+class QuestionSpider(CrawlSpider):
+    name = "question"
     allowed_domains = ["stackoverflow.com"]
     start_urls = [
         "http://stackoverflow.com/search?q=regular+expression"
@@ -40,8 +40,8 @@ class StackOverFlowSpider(CrawlSpider):
         try:
             with connection.cursor() as cursor:
                 # Create a new record
-		sql = "INSERT INTO `answers` (`url`, `pre`, `time_posted`, `author`, `vote`) VALUES (%s, %s, %s, %s, %s)"
-                cursor.execute(sql, (item['url'], item['pre_text'], item['time_posted'], item['author'], item['vote']))
+		sql = "INSERT INTO `question` (`url`, `pre`, `time_posted`, `author`, `vote`, `times_viewed`) VALUES (%s, %s, %s, %s, %s, %s)"
+                cursor.execute(sql, (item['url'], item['pre_text'], item['time_posted'], item['author'], item['vote'], item['times_viewed']))
 
                 # connection is not autocommit by default. So you must commit to save
                 # your changes.
@@ -56,10 +56,11 @@ class StackOverFlowSpider(CrawlSpider):
     """
 
     def parse_item(self, response):
-        global answers
+    	global answers
         hxs = HtmlXPathSelector(response)
-        posts = hxs.select("//div[@id='answers']/div[@class='answer accepted-answer']")
+        posts = hxs.select("//div[@id='mainbar']/div[@class='question']")
         items = []
+	times_viewed = hxs.select("//div[@id='sidebar']/div[@class='module question-stats']/table[@id='qinfo']/tbody/tr/td/p[@class='label-key']/b/text()")[2].extract()
 
         for post in posts:
             # print(post)
@@ -67,15 +68,18 @@ class StackOverFlowSpider(CrawlSpider):
 	    item['url'] = response.url
             item['pre_text'] = ''.join(post.select(".//div[@class='post-text']//pre//text()").extract())
             item['time_posted'] = parse(post.select(".//div[@class='user-action-time']//span/text()").extract()[0])
-	    item['author']= ''.join(post.select(".//div[@class='user-details']//a/text()").extract())
-	    item['vote']=''.join(post.select(".//div[@class='vote']//span[@class='vote-count-post ' or @class='vote-count-post high-scored-post']/text()").extract())
+	    item['author'] = ''.join(post.select(".//div[@class='user-details']//a/text()").extract())
+	    item['vote'] =''.join(post.select(".//div[@class='vote']//span[@class='vote-count-post ' or @class='vote-count-post high-scored-post']/text()").extract())
+
+	    item['times_viewed'] = times_viewed
+
+
             self.insert_item(item)
             items.append(item)
         # self.insert_posts(items)
         #for item in items:
         #    print >> answers, "%s,'%s'\n" % (item['url'], item['pre_text'])
         return items
-
 
 
 
