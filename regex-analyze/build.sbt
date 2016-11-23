@@ -26,10 +26,10 @@ resolvers += "luzhuomi github repo" at "https://raw.githubusercontent.com/luzhuo
 
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.4" // scala license
-
+libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
 libraryDependencies += "com.github.luzhuomi" %% "scalapderiv" % "0.0.8"  // apache license
 
-libraryDependencies += "com.github.luzhuomi" %% "scaladeriv" % "0.0.18"
+libraryDependencies += "com.github.luzhuomi" %% "scaladeriv" % "0.0.1"
 seq(assemblySettings: _*)
 
 
