@@ -8,7 +8,7 @@ name := "regex-analyze"
 
 organization := "com.github.luzhuomi"
 
-version := "0.0.1"
+version := "0.0.2"
 
 scalaVersion := "2.11.8"
 
@@ -28,7 +28,10 @@ resolvers += "luzhuomi github repo" at "https://raw.githubusercontent.com/luzhuo
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.4" // scala license
 libraryDependencies += "com.github.luzhuomi" %% "scalazparsec" % "0.1.2" 
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
-libraryDependencies += "org.apache.spark" %% "spark-core" % "1.5.2"
+libraryDependencies += "org.apache.spark" %% "spark-core" % "2.1.0"
+libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.1.0"
+
+// libraryDependencies += "org.apache.spark" %% "spark-hivecontext-compatibility" % "2.0.0-preview"
 libraryDependencies += "com.github.luzhuomi" %% "scalapderiv" % "0.0.8"  // apache license
 libraryDependencies += "com.github.luzhuomi" %% "scaladeriv" % "0.0.2"
 
